@@ -1,9 +1,4 @@
 
-
-def user_layer(processing_call, data_access_call):
-    file_name = input("Enter the file name:")
-    print(processing_call(file_name, data_access_call))
-
 def processing_layer(file_name, data_access_call):
     import re
     from collections import defaultdict
@@ -33,6 +28,3 @@ def data_access_layer(file_name):
     with open(file_name, 'r') as file:
         data = file.read()
     return data
-
-
-user_layer(processing_layer, data_access_layer)
