@@ -17,13 +17,13 @@ def acquire_connection():
     # Retry until is not connected
     while not connected:
         try:
-            print "Trying to acquire connection in " + str(host) + ":" +  str(port)
+            print("Trying to acquire connection in " + str(host) + ":" +  str(port))
             sckt.connect((host, port))
-            print "   Successfully connected!"
+            print("   Successfully connected!")
             connected = True
         except:
-            print "Failed acquire connection in " + str(host) + ":" +  str(port)
-            print "   Trying again in " + str(retry_time_secs) + " seconds..."
+            print("Failed acquire connection in " + str(host) + ":" +  str(port))
+            print("   Trying again in " + str(retry_time_secs) + " seconds...")
             time.sleep(retry_time_secs)
 
 def wait_for_message(start_time):
@@ -34,21 +34,25 @@ def wait_for_message(start_time):
     # sometimes the time to receive message is close enough to zero so the computer can't measure
     # in general, after the first message the system became faster in the exchange of messages
     total_time_waited = end_time - start_time
-    print "Message received after " + "{0:.15f}".format(total_time_waited) + "s since it was sent"
-    print "   Content: " + str(msg)
+    print("Message received after " + "{0:.15f}".format(total_time_waited) + "s since it was sent")
+    print("   Content: " + str(msg))
         
 
 
 def user_interaction():
     while True:
-        msg = raw_input("Write something here (-q to quit): ")
+        msg = input("Write something here (-q to quit): ")
+        if(msg == "null"): # testing what happens when we basically send nothing
+            msg = ""
+        
         start_time = time.time()
-        sckt.send(bytes(msg))
+        sckt.send(bytes(msg, encoding="utf-8"))
         if msg == '-q':
-            print 'The connection was closed by the user'
+            print('The connection was closed by the user')
             break
         else:
             wait_for_message(start_time)
+        print("")
 
 
 acquire_connection()
