@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from socket import *
 import time
-
+import json
 
 host = 'localhost'
 port = 7001
@@ -24,24 +24,25 @@ def acquire_connection():
         except:
             print ("Failed acquire connection in " + str(host) + ":" +  str(port))
             print ("   Trying again in " + str(retry_time_secs) + " seconds...")
+            connected = False
             time.sleep(retry_time_secs)
 
 def wait_for_message():
     msg = sckt.recv(wait_time_msecs)
-    print("   Content: " + msg.decode("utf-8"))
+    print("   Content:\n" + msg.decode("utf-8"))
         
 
 
 def user_interaction():
     while True:
-        msg = input("Enter the file name:")
-        sckt.send(bytes(msg, encoding='utf8'))
-        if msg == '-q':
+        file_name = input("Enter the file name, -q to quit:")
+        if file_name == '-q':
             print ('The connection was closed by the user')
             break
-        else:
-            wait_for_message()
+        word = input("Enter the word to be counted:")
 
+        sckt.send(bytes(json.dumps({'file_name':file_name, 'word':word}), encoding='utf8'))
+        wait_for_message()
 
 acquire_connection()
 user_interaction()

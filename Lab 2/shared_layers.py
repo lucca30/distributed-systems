@@ -1,30 +1,24 @@
 
-def processing_layer(file_name, data_access_call):
+def processing_layer(file_name, word,data_access_call):
     import re
     from collections import defaultdict
 
+    # calling dependency to access data (probably the function implemented below)
     data = data_access_call(file_name)
+    if(data == "Failed to access the data"):
+        return "Failed to access the data. No existing file"
     rgx = re.compile("([\w][\w']*\w)")
-    words = rgx.findall(data)
-    
-    word_count = {}
-    word_count = defaultdict(lambda:0,word_count)
-    
-    for word in words:
-        word_count[word] += 1
-    
-    occurrences_and_words = [(word_count[x], x) for x in word_count.keys()]
+    words = [w.lower() for w in rgx.findall(data)]
 
-    occurrences_and_words.sort(reverse=True)
-    top_words = occurrences_and_words[0:10]
-
-    response = "Top words:\n\n"
-    response += "\n".join([ ( x[1].ljust(10) + " -> " + str(x[0]).ljust(3) + " occurrences") for x in top_words])
+    response = "\t" + word + " -> " + str(words.count(word.lower())) + " occurrences" 
     return response
 
 
 
 def data_access_layer(file_name):
-    with open(file_name, 'r') as file:
-        data = file.read()
+    try:
+        with open(file_name, 'r') as file:
+            data = file.read()
+    except:
+        data = "Failed to access the data"
     return data
