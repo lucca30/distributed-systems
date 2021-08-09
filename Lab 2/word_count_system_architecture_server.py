@@ -24,6 +24,8 @@ while True:
             connectionSckt, address = sckt.accept()
             connected = True
         msg = connectionSckt.recv(wait_time_msecs)
+        if (not msg):
+            break
         msg = json.loads(msg)
         print("Received:" + str(msg))
         response = processing_layer(msg['file_name'], msg['word'], data_access_layer)
